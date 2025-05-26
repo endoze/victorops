@@ -1,5 +1,10 @@
 # VictorOps Rust Client
 
+[![Build Status](https://github.com/endoze/victorops/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/endoze/victorops/actions?query=branch%3Amaster)
+[![Coverage Status](https://coveralls.io/repos/github/endoze/victorops/badge.svg?branch=master)](https://coveralls.io/github/endoze/victorops?branch=master)
+[![Crate](https://img.shields.io/crates/v/victorops.svg)](https://crates.io/crates/victorops)
+[![Docs](https://docs.rs/victorops/badge.svg)](https://docs.rs/victorops)
+
 A Rust client library for the VictorOps (Splunk On-Call) REST API.
 
 ## Features
