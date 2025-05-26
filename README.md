@@ -114,7 +114,8 @@ cargo run --example incidents
 
 ### Basic Client
 ```rust
-fn main() -> victorops::ApiResult<()> {
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
   let client = victorops::Client::new(
     "api-id".to_string(),
     "api-key".to_string(),
@@ -129,7 +130,8 @@ fn main() -> victorops::ApiResult<()> {
 ```rust
 use std::time::Duration;
 
-fn main() -> victorops::ApiResult<()> {
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
   let client = victorops::Client::with_timeout(
     "api-id".to_string(),
     "api-key".to_string(),
