@@ -40,7 +40,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
   )?;
   
   let (incidents, _details) = client.get_incidents().await?;
-  println!("Found {} incidents", incidents.incidents.map_or(0, |i| i.len()));
+  println!("Found {} incidents", incidents.incidents.len());
 
   Ok(())
 }

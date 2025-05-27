@@ -568,8 +568,8 @@ impl Client {
   ) -> ApiResult<(bool, RequestDetails)> {
     let (members, details) = self.get_team_members(team_id).await?;
 
-    if let Some(member_list) = members.members {
-      for member in member_list {
+    if !members.members.is_empty() {
+      for member in &members.members {
         if let Some(member_username) = &member.username {
           if member_username.to_lowercase() == username.to_lowercase() {
             return Ok((true, details));
@@ -861,11 +861,11 @@ impl Client {
   ) -> ApiResult<(Option<RoutingKeyResponse>, RequestDetails)> {
     let (rk_list, details) = self.get_all_routing_keys().await?;
 
-    if let Some(routing_keys) = rk_list.routing_keys {
-      for key in routing_keys {
+    if !rk_list.routing_keys.is_empty() {
+      for key in &rk_list.routing_keys {
         if let Some(routing_key) = &key.routing_key {
           if routing_key == key_name {
-            return Ok((Some(key), details));
+            return Ok((Some(key.clone()), details));
           }
         }
       }
@@ -1083,11 +1083,11 @@ impl Client {
 
     let contacts: GetAllContactResponse = serde_json::from_str(&details.response_body)?;
 
-    if let Some(contact_methods) = contacts.contact_methods {
-      for contact in contact_methods {
+    if !contacts.contact_methods.is_empty() {
+      for contact in &contacts.contact_methods {
         if let Some(contact_id) = contact.id {
           if contact_id == id {
-            return Ok((Some(contact), details));
+            return Ok((Some(contact.clone()), details));
           }
         }
       }
@@ -1268,8 +1268,8 @@ mod tests {
     assert!(result.is_ok());
 
     let (incident_response, details) = result.unwrap();
-    assert!(incident_response.incidents.is_some());
-    let incidents = incident_response.incidents.unwrap();
+    assert!(!incident_response.incidents.is_empty());
+    let incidents = &incident_response.incidents;
     assert_eq!(incidents.len(), 2);
     assert_eq!(details.status_code, 200);
   }
@@ -1973,8 +1973,8 @@ mod tests {
     assert!(result.is_ok());
 
     let (team_members, details) = result.unwrap();
-    assert!(team_members.members.is_some());
-    let members = team_members.members.unwrap();
+    assert!(!team_members.members.is_empty());
+    let members = &team_members.members;
     assert_eq!(members.len(), 2);
     assert_eq!(details.status_code, 200);
   }
@@ -2011,8 +2011,8 @@ mod tests {
     assert!(result.is_ok());
 
     let (team_members, details) = result.unwrap();
-    assert!(team_members.admin.is_some());
-    let members = team_members.admin.unwrap();
+    assert!(!team_members.admin.is_empty());
+    let members = &team_members.admin;
     assert_eq!(members.len(), 1);
     assert_eq!(details.status_code, 200);
   }
@@ -2059,7 +2059,7 @@ mod tests {
     assert!(result.is_ok());
 
     let (schedule, details) = result.unwrap();
-    assert!(schedule.schedules.is_some());
+    assert!(!schedule.schedules.is_empty());
     assert_eq!(details.status_code, 200);
   }
 
@@ -2098,7 +2098,7 @@ mod tests {
     assert!(result.is_ok());
 
     let (schedule, details) = result.unwrap();
-    assert!(schedule.schedules.is_some());
+    assert!(schedule.schedules.is_empty());
     assert_eq!(details.status_code, 200);
   }
 
@@ -2148,7 +2148,7 @@ mod tests {
     assert!(result.is_ok());
 
     let (schedule, details) = result.unwrap();
-    assert!(schedule.schedules.is_some());
+    assert!(!schedule.schedules.is_empty());
     assert_eq!(details.status_code, 200);
   }
 
@@ -2409,7 +2409,7 @@ mod tests {
 
     let routing_key = crate::types::RoutingKey {
       routing_key: Some("test-key".to_string()),
-      targets: Some(vec!["team1".to_string(), "team2".to_string()]),
+      targets: vec!["team1".to_string(), "team2".to_string()],
     };
 
     let result = client.create_routing_key(&routing_key).await;
@@ -2463,8 +2463,8 @@ mod tests {
     assert!(result.is_ok());
 
     let (routing_keys, details) = result.unwrap();
-    assert!(routing_keys.routing_keys.is_some());
-    let keys = routing_keys.routing_keys.unwrap();
+    assert!(!routing_keys.routing_keys.is_empty());
+    let keys = &routing_keys.routing_keys;
     assert_eq!(keys.len(), 2);
     assert_eq!(details.status_code, 200);
   }
