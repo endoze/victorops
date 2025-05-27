@@ -17,9 +17,9 @@ async fn main() -> victorops::ApiResult<()> {
 
   let (schedule, _details) = client.get_api_team_schedule(&team_slug, 7, 0, 0).await?;
 
-  if let Some(schedules) = schedule.schedules {
+  if !schedule.schedules.is_empty() {
     println!("Team Schedule for '{}':", team_slug);
-    println!("{:#?}", schedules);
+    println!("{:#?}", schedule.schedules);
   } else {
     println!("No schedules found for team '{}'", team_slug);
   }

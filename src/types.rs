@@ -100,25 +100,25 @@ pub struct Incident {
   #[serde(skip_serializing_if = "Option::is_none", rename = "startTime")]
   pub start_time: Option<DateTime<Utc>>,
   /// The list of teams that were paged for this incident.
-  #[serde(skip_serializing_if = "Option::is_none", rename = "pagedTeams")]
-  pub paged_teams: Option<Vec<String>>,
+  #[serde(default, skip_serializing_if = "Vec::is_empty", rename = "pagedTeams")]
+  pub paged_teams: Vec<String>,
   /// The list of users that were paged for this incident.
-  #[serde(skip_serializing_if = "Option::is_none", rename = "pagedUsers")]
-  pub paged_users: Option<Vec<String>>,
+  #[serde(default, skip_serializing_if = "Vec::is_empty", rename = "pagedUsers")]
+  pub paged_users: Vec<String>,
   /// The list of escalation policies that were triggered for this incident.
-  #[serde(skip_serializing_if = "Option::is_none", rename = "pagedPolicies")]
-  pub paged_policies: Option<Vec<PagedPolicy>>,
+  #[serde(default, skip_serializing_if = "Vec::is_empty", rename = "pagedPolicies")]
+  pub paged_policies: Vec<PagedPolicy>,
   /// The state transitions that occurred during this incident.
-  #[serde(skip_serializing_if = "Option::is_none")]
-  pub transitions: Option<Vec<Transition>>,
+  #[serde(default, skip_serializing_if = "Vec::is_empty")]
+  pub transitions: Vec<Transition>,
 }
 
 /// Response containing a list of incidents.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct IncidentResponse {
   /// The list of incidents in the response.
-  #[serde(skip_serializing_if = "Option::is_none")]
-  pub incidents: Option<Vec<Incident>>,
+  #[serde(default, skip_serializing_if = "Vec::is_empty")]
+  pub incidents: Vec<Incident>,
 }
 
 /// Represents a user in VictorOps.
@@ -194,8 +194,8 @@ pub struct Team {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TeamMembers {
   /// The list of team members.
-  #[serde(skip_serializing_if = "Option::is_none")]
-  pub members: Option<Vec<User>>,
+  #[serde(default, skip_serializing_if = "Vec::is_empty")]
+  pub members: Vec<User>,
 }
 
 /// Represents an admin user.
@@ -219,8 +219,8 @@ pub struct Admin {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TeamAdmins {
   /// The list of team administrators.
-  #[serde(skip_serializing_if = "Option::is_none")]
-  pub admin: Option<Vec<Admin>>,
+  #[serde(default, skip_serializing_if = "Vec::is_empty")]
+  pub admin: Vec<Admin>,
 }
 
 /// Represents a contact method.
@@ -329,8 +329,8 @@ pub struct ApiOnCallEntry {
   #[serde(skip_serializing_if = "Option::is_none", rename = "shiftRoll")]
   pub shift_roll: Option<DateTime<Utc>>,
   /// The list of rolls/rotations for this entry.
-  #[serde(skip_serializing_if = "Option::is_none")]
-  pub rolls: Option<Vec<ApiOnCallRoll>>,
+  #[serde(default, skip_serializing_if = "Vec::is_empty")]
+  pub rolls: Vec<ApiOnCallRoll>,
 }
 
 /// Represents an escalation policy schedule.
@@ -340,11 +340,11 @@ pub struct ApiEscalationPolicySchedule {
   #[serde(skip_serializing_if = "Option::is_none")]
   pub policy: Option<ApiEscalationPolicy>,
   /// The schedule entries for this escalation policy.
-  #[serde(skip_serializing_if = "Option::is_none")]
-  pub schedule: Option<Vec<ApiOnCallEntry>>,
+  #[serde(default, skip_serializing_if = "Vec::is_empty")]
+  pub schedule: Vec<ApiOnCallEntry>,
   /// The on-call overrides for this escalation policy.
-  #[serde(skip_serializing_if = "Option::is_none")]
-  pub overrides: Option<Vec<ApiOnCallOverride>>,
+  #[serde(default, skip_serializing_if = "Vec::is_empty")]
+  pub overrides: Vec<ApiOnCallOverride>,
 }
 
 /// Represents a team's on-call schedule.
@@ -354,16 +354,16 @@ pub struct ApiTeamSchedule {
   #[serde(skip_serializing_if = "Option::is_none")]
   pub team: Option<ApiTeam>,
   /// The escalation policy schedules for this team.
-  #[serde(skip_serializing_if = "Option::is_none")]
-  pub schedules: Option<Vec<ApiEscalationPolicySchedule>>,
+  #[serde(default, skip_serializing_if = "Vec::is_empty")]
+  pub schedules: Vec<ApiEscalationPolicySchedule>,
 }
 
 /// Represents a user's on-call schedule.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ApiUserSchedule {
   /// The team schedules for this user.
-  #[serde(skip_serializing_if = "Option::is_none", rename = "teamSchedules")]
-  pub schedules: Option<Vec<ApiTeamSchedule>>,
+  #[serde(default, skip_serializing_if = "Vec::is_empty", rename = "teamSchedules")]
+  pub schedules: Vec<ApiTeamSchedule>,
 }
 
 /// Request to take on-call duty.
@@ -467,8 +467,8 @@ pub struct RoutingKey {
   #[serde(skip_serializing_if = "Option::is_none", rename = "routingKey")]
   pub routing_key: Option<String>,
   /// The list of targets that this routing key routes to.
-  #[serde(skip_serializing_if = "Option::is_none")]
-  pub targets: Option<Vec<String>>,
+  #[serde(default, skip_serializing_if = "Vec::is_empty")]
+  pub targets: Vec<String>,
 }
 
 /// Represents targets in a routing key response.
@@ -486,16 +486,16 @@ pub struct RoutingKeyResponse {
   #[serde(skip_serializing_if = "Option::is_none", rename = "routingKey")]
   pub routing_key: Option<String>,
   /// The targets that this routing key routes to.
-  #[serde(skip_serializing_if = "Option::is_none")]
-  pub targets: Option<Vec<RoutingKeyResponseTargets>>,
+  #[serde(default, skip_serializing_if = "Vec::is_empty")]
+  pub targets: Vec<RoutingKeyResponseTargets>,
 }
 
 /// Response containing a list of routing keys.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RoutingKeyResponseList {
   /// The list of routing keys.
-  #[serde(skip_serializing_if = "Option::is_none", rename = "routingKeys")]
-  pub routing_keys: Option<Vec<RoutingKeyResponse>>,
+  #[serde(default, skip_serializing_if = "Vec::is_empty", rename = "routingKeys")]
+  pub routing_keys: Vec<RoutingKeyResponse>,
 }
 
 /// Types of contact methods available in VictorOps.
@@ -598,8 +598,8 @@ pub struct AllContactResponse {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GetAllContactResponse {
   /// The list of contact methods of the requested type.
-  #[serde(skip_serializing_if = "Option::is_none", rename = "contactMethods")]
-  pub contact_methods: Option<Vec<Contact>>,
+  #[serde(default, skip_serializing_if = "Vec::is_empty", rename = "contactMethods")]
+  pub contact_methods: Vec<Contact>,
 }
 
 #[cfg(test)]
