@@ -6,6 +6,8 @@ authors = ["Endoze <endoze@endozemedia.com>"]
 description = "Async Rust client for VictorOps"
 license = "MIT"
 repository = "https://github.com/endoze/victorops"
+keywords = ["victorops", "api", "client", "async", "monitoring"]
+categories = ["api-bindings", "asynchronous"]
 
 [dependencies]
 reqwest = { version = "0.12", features = ["json"] }
