@@ -355,14 +355,12 @@ impl Client {
     let emails_response: EmailsResponse = serde_json::from_str(&details.response_body)?;
 
     for contact_method in &emails_response.contact_methods {
-      if let Some(label) = contact_method.get("label") {
-        if label.as_str() == Some("Default") {
-          if let Some(id) = contact_method.get("id") {
-            if let Some(id_num) = id.as_f64() {
-              return Ok((id_num, details));
-            }
-          }
-        }
+      if let Some(label) = contact_method.get("label")
+        && label.as_str() == Some("Default")
+        && let Some(id) = contact_method.get("id")
+        && let Some(id_num) = id.as_f64()
+      {
+        return Ok((id_num, details));
       }
     }
 
@@ -570,10 +568,10 @@ impl Client {
 
     if !members.members.is_empty() {
       for member in &members.members {
-        if let Some(member_username) = &member.username {
-          if member_username.to_lowercase() == username.to_lowercase() {
-            return Ok((true, details));
-          }
+        if let Some(member_username) = &member.username
+          && member_username.to_lowercase() == username.to_lowercase()
+        {
+          return Ok((true, details));
         }
       }
     }
@@ -863,10 +861,10 @@ impl Client {
 
     if !rk_list.routing_keys.is_empty() {
       for key in &rk_list.routing_keys {
-        if let Some(routing_key) = &key.routing_key {
-          if routing_key == key_name {
-            return Ok((Some(key.clone()), details));
-          }
+        if let Some(routing_key) = &key.routing_key
+          && routing_key == key_name
+        {
+          return Ok((Some(key.clone()), details));
         }
       }
     }
@@ -1085,10 +1083,10 @@ impl Client {
 
     if !contacts.contact_methods.is_empty() {
       for contact in &contacts.contact_methods {
-        if let Some(contact_id) = contact.id {
-          if contact_id == id {
-            return Ok((Some(contact.clone()), details));
-          }
+        if let Some(contact_id) = contact.id
+          && contact_id == id
+        {
+          return Ok((Some(contact.clone()), details));
         }
       }
     }

@@ -106,7 +106,11 @@ pub struct Incident {
   #[serde(default, skip_serializing_if = "Vec::is_empty", rename = "pagedUsers")]
   pub paged_users: Vec<String>,
   /// The list of escalation policies that were triggered for this incident.
-  #[serde(default, skip_serializing_if = "Vec::is_empty", rename = "pagedPolicies")]
+  #[serde(
+    default,
+    skip_serializing_if = "Vec::is_empty",
+    rename = "pagedPolicies"
+  )]
   pub paged_policies: Vec<PagedPolicy>,
   /// The state transitions that occurred during this incident.
   #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -362,7 +366,11 @@ pub struct ApiTeamSchedule {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ApiUserSchedule {
   /// The team schedules for this user.
-  #[serde(default, skip_serializing_if = "Vec::is_empty", rename = "teamSchedules")]
+  #[serde(
+    default,
+    skip_serializing_if = "Vec::is_empty",
+    rename = "teamSchedules"
+  )]
   pub schedules: Vec<ApiTeamSchedule>,
 }
 
@@ -598,7 +606,11 @@ pub struct AllContactResponse {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GetAllContactResponse {
   /// The list of contact methods of the requested type.
-  #[serde(default, skip_serializing_if = "Vec::is_empty", rename = "contactMethods")]
+  #[serde(
+    default,
+    skip_serializing_if = "Vec::is_empty",
+    rename = "contactMethods"
+  )]
   pub contact_methods: Vec<Contact>,
 }
 
@@ -688,7 +700,7 @@ mod tests {
 
     let json = serde_json::to_string(&contact).unwrap();
     let deserialized: Contact = serde_json::from_str(&json).unwrap();
-    
+
     assert_eq!(deserialized.phone_number, contact.phone_number);
     assert_eq!(deserialized.email, contact.email);
     assert_eq!(deserialized.label, contact.label);
@@ -698,23 +710,21 @@ mod tests {
   #[test]
   fn test_contact_group_serialization() {
     let contact_group = ContactGroup {
-      contact_methods: vec![
-        Contact {
-          phone_number: Some("555-1234".to_string()),
-          email: None,
-          label: Some("Primary".to_string()),
-          rank: Some(1),
-          ext_id: None,
-          id: None,
-          value: None,
-          verified: None,
-        }
-      ],
+      contact_methods: vec![Contact {
+        phone_number: Some("555-1234".to_string()),
+        email: None,
+        label: Some("Primary".to_string()),
+        rank: Some(1),
+        ext_id: None,
+        id: None,
+        value: None,
+        verified: None,
+      }],
     };
 
     let json = serde_json::to_string(&contact_group).unwrap();
     assert!(json.contains("contactMethods"));
-    
+
     let deserialized: ContactGroup = serde_json::from_str(&json).unwrap();
     assert_eq!(deserialized.contact_methods.len(), 1);
   }
