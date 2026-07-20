@@ -26,11 +26,11 @@ pub enum Error {
 
   /// API returned an error response.
   #[error("API error: {status} - {message}")]
-  Api { 
+  Api {
     /// The HTTP status code returned by the API.
-    status: u16, 
+    status: u16,
     /// The error message returned by the API.
-    message: String 
+    message: String,
   },
 
   /// Authentication failed.
@@ -65,7 +65,10 @@ mod tests {
     assert_eq!(format!("{}", not_found_error), "Resource not found");
 
     let invalid_input_error = Error::InvalidInput("Bad data".to_string());
-    assert_eq!(format!("{}", invalid_input_error), "Invalid input: Bad data");
+    assert_eq!(
+      format!("{}", invalid_input_error),
+      "Invalid input: Bad data"
+    );
   }
 
   #[test]
