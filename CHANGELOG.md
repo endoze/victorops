@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.4](https://github.com/endoze/victorops/compare/v0.1.3...v0.1.4) - 2026-07-20
+
+### Other
+
+- *(deps)* upgrade dependencies to latest
+
 ## [0.1.3](https://github.com/endoze/victorops/compare/v0.1.2...v0.1.3) - 2025-06-14
 
 ### Other
