@@ -1,0 +1,82 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+language: en-US
+early_access: false
+enable_free_tier: true
+
+reviews:
+  profile: assertive
+  request_changes_workflow: false
+  high_level_summary: true
+  collapse_walkthrough: true
+  sequence_diagrams: false
+  poem: false
+  in_progress_fortune: false
+  suggested_labels: false
+  suggested_reviewers: false
+  path_filters:
+    - "!Cargo.lock"
+    - "!target/**"
+    - "!coverage/**"
+    - "!CHANGELOG.md"
+  path_instructions:
+    - path: "src/**/*.rs"
+      instructions: |
+        Public items need rustdoc covering the contract: purpose, invariants,
+        errors, panics, and an example where it helps. Inline `//` comments are
+        only warranted for a why the code cannot state (a workaround and its
+        reason, a drop-order dependency, a deliberate fail-closed choice).
+        Flag inline comments that restate what the code does or describe a
+        dependency's internals.
+
+        Async client library for the VictorOps public REST API (reqwest + tokio).
+        Public API stability matters: `types` is re-exported at the crate root and
+        reqwest, serde_json, url, and time types appear in public fields and
+        `Error` variants, so flag changes that need a semver major bump. The API
+        ID and key belong only in the `X-VO-Api-*` headers; flag anything that
+        logs them or puts them in a URL or error message. Errors go through the
+        `Error` enum and `ApiResult`, with no panics in library code. Unit tests
+        live inline in `src` and use mockito. rustfmt uses `tab_spaces = 2`.
+
+        Do not comment on style that `cargo fmt` or
+        `cargo clippy --all-targets --all-features -- -D warnings` already
+        enforces.
+    - path: "tests/**/*.rs"
+      instructions: |
+        Check that tests assert behavior rather than restating the
+        implementation, and that new public API or bugfixes come with
+        coverage.
+    - path: ".github/workflows/**"
+      instructions: |
+        Every third-party action must be pinned to a full commit SHA with the
+        version in a trailing comment (`uses: owner/action@<sha> # vX.Y.Z`).
+        release.yml is hand-maintained: dist can't generate a release workflow for
+        a library crate, so don't suggest regenerating it. dist alone creates GitHub Releases (release-plz.toml keeps `git_release_enable = false`).
+  auto_review:
+    enabled: true
+    drafts: false
+    auto_incremental_review: true
+    # Stacked PRs target the branch below them, not just master.
+    base_branches:
+      - ".*"
+  tools:
+    clippy:
+      enabled: true
+    actionlint:
+      enabled: true
+    yamllint:
+      enabled: true
+    gitleaks:
+      enabled: true
+    markdownlint:
+      enabled: true
+
+chat:
+  art: false
+  auto_reply: true
+  allow_non_org_members: false
+
+knowledge_base:
+  learnings:
+    scope: local
+  issues:
+    scope: local

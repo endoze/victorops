@@ -22,7 +22,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-victorops = "0.1.0"
+victorops = "0.2"
 ```
 
 ## Quick Start

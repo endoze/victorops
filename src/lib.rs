@@ -8,7 +8,11 @@ pub mod client;
 pub mod error;
 
 /// Type definitions for VictorOps API requests and responses.
+///
+/// Timestamp fields are [`time::OffsetDateTime`] values in UTC.
 pub mod types;
+
+mod timestamp;
 
 /// Main HTTP client for interacting with the VictorOps API.
 pub use client::Client;

@@ -9,7 +9,7 @@ use std::time::Duration;
 ///
 /// The Client provides methods for making authenticated requests to the VictorOps API,
 /// including operations for incidents, users, teams, escalation policies, and more.
-#[derive(Debug, Clone)]
+#[derive(Clone)]
 pub struct Client {
   pub(crate) pub_base_url: String,
   pub(crate) api_id: String,
@@ -1095,6 +1095,17 @@ impl Client {
   }
 }
 
+impl std::fmt::Debug for Client {
+  fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    f.debug_struct("Client")
+      .field("pub_base_url", &self.pub_base_url)
+      .field("api_id", &"[redacted]")
+      .field("api_key", &"[redacted]")
+      .field("http_client", &self.http_client)
+      .finish()
+  }
+}
+
 impl std::fmt::Display for Client {
   fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
     write!(f, "VictorOps Client: publicBaseURL: {}", self.pub_base_url)
@@ -1121,6 +1132,23 @@ mod tests {
     assert_eq!(client.pub_base_url, "https://api.victorops.com");
     assert_eq!(client.api_id, "test-api-id");
     assert_eq!(client.api_key, "test-api-key");
+  }
+
+  #[test]
+  fn test_client_debug_redacts_credentials() {
+    let client = Client::new(
+      "secret-id-5f3a".to_string(),
+      "secret-key-9c1e".to_string(),
+      "https://api.victorops.com".to_string(),
+    )
+    .unwrap();
+
+    for output in [format!("{client:?}"), format!("{client:#?}")] {
+      assert!(!output.contains("secret-id-5f3a"), "{output}");
+      assert!(!output.contains("secret-key-9c1e"), "{output}");
+      assert!(output.contains("[redacted]"), "{output}");
+      assert!(output.contains("https://api.victorops.com"), "{output}");
+    }
   }
 
   #[test]

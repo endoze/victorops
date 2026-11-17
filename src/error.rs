@@ -7,6 +7,7 @@ pub type ApiResult<T> = std::result::Result<T, Error>;
 
 /// Error types that can occur when using the VictorOps API client.
 #[derive(Error, Debug)]
+#[non_exhaustive]
 pub enum Error {
   /// HTTP request failed.
   #[error("HTTP request failed: {0}")]

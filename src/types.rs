@@ -1,8 +1,9 @@
-use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
+use time::OffsetDateTime;
 
 /// Details about an HTTP request made to the VictorOps API.
 #[derive(Debug, Clone)]
+#[non_exhaustive]
 pub struct RequestDetails {
   /// The HTTP status code of the response.
   pub status_code: u16,
@@ -14,6 +15,7 @@ pub struct RequestDetails {
 
 /// A paged entity containing basic name and slug information.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct PagedEntity {
   /// The name of the entity.
   #[serde(skip_serializing_if = "Option::is_none")]
@@ -25,6 +27,7 @@ pub struct PagedEntity {
 
 /// A paged policy containing policy and team information.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct PagedPolicy {
   /// The policy entity information.
   #[serde(skip_serializing_if = "Option::is_none")]
@@ -36,13 +39,19 @@ pub struct PagedPolicy {
 
 /// Represents a state transition in an incident.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Transition {
   /// The name of the transition.
   #[serde(skip_serializing_if = "Option::is_none", rename = "Name")]
   pub name: Option<String>,
   /// When the transition occurred.
-  #[serde(skip_serializing_if = "Option::is_none", rename = "At")]
-  pub at: Option<DateTime<Utc>>,
+  #[serde(
+    default,
+    with = "crate::timestamp",
+    skip_serializing_if = "Option::is_none",
+    rename = "At"
+  )]
+  pub at: Option<OffsetDateTime>,
   /// Message associated with the transition.
   #[serde(skip_serializing_if = "Option::is_none", rename = "Message")]
   pub message: Option<String>,
@@ -62,6 +71,7 @@ pub struct Transition {
 
 /// Represents an incident in VictorOps.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Incident {
   /// The number of alerts in this incident.
   #[serde(skip_serializing_if = "Option::is_none", rename = "alertCount")]
@@ -91,14 +101,24 @@ pub struct Incident {
   #[serde(skip_serializing_if = "Option::is_none", rename = "lastAlertId")]
   pub last_alert_id: Option<String>,
   /// The timestamp of the last alert in this incident.
-  #[serde(skip_serializing_if = "Option::is_none", rename = "lastAlertTime")]
-  pub last_alert_time: Option<DateTime<Utc>>,
+  #[serde(
+    default,
+    with = "crate::timestamp",
+    skip_serializing_if = "Option::is_none",
+    rename = "lastAlertTime"
+  )]
+  pub last_alert_time: Option<OffsetDateTime>,
   /// The service associated with the incident.
   #[serde(skip_serializing_if = "Option::is_none")]
   pub service: Option<String>,
   /// The timestamp when the incident started.
-  #[serde(skip_serializing_if = "Option::is_none", rename = "startTime")]
-  pub start_time: Option<DateTime<Utc>>,
+  #[serde(
+    default,
+    with = "crate::timestamp",
+    skip_serializing_if = "Option::is_none",
+    rename = "startTime"
+  )]
+  pub start_time: Option<OffsetDateTime>,
   /// The list of teams that were paged for this incident.
   #[serde(default, skip_serializing_if = "Vec::is_empty", rename = "pagedTeams")]
   pub paged_teams: Vec<String>,
@@ -119,6 +139,7 @@ pub struct Incident {
 
 /// Response containing a list of incidents.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct IncidentResponse {
   /// The list of incidents in the response.
   #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -126,7 +147,8 @@ pub struct IncidentResponse {
 }
 
 /// Represents a user in VictorOps.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct User {
   /// The first name of the user.
   #[serde(skip_serializing_if = "Option::is_none", rename = "firstName")]
@@ -162,6 +184,7 @@ pub struct User {
 
 /// Response containing a list of users (v1 API format).
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct UserList {
   /// The nested list of users in v1 API format.
   pub users: Vec<Vec<User>>,
@@ -169,13 +192,15 @@ pub struct UserList {
 
 /// Response containing a list of users (v2 API format).
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct UserListV2 {
   /// The list of users in v2 API format.
   pub users: Vec<User>,
 }
 
 /// Represents a team in VictorOps.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Team {
   /// The name of the team.
   #[serde(skip_serializing_if = "Option::is_none")]
@@ -196,6 +221,7 @@ pub struct Team {
 
 /// Response containing team members.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct TeamMembers {
   /// The list of team members.
   #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -204,6 +230,7 @@ pub struct TeamMembers {
 
 /// Represents an admin user.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Admin {
   /// The username of the admin.
   #[serde(skip_serializing_if = "Option::is_none")]
@@ -221,6 +248,7 @@ pub struct Admin {
 
 /// Response containing team administrators.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct TeamAdmins {
   /// The list of team administrators.
   #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -229,6 +257,7 @@ pub struct TeamAdmins {
 
 /// Represents a contact method.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct ContactMethod {
   /// The unique identifier of the contact method.
   pub id: f64,
@@ -238,6 +267,7 @@ pub struct ContactMethod {
 
 /// Response containing email contact methods.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct EmailsResponse {
   /// The list of email contact methods.
   #[serde(rename = "contactMethods")]
@@ -246,6 +276,7 @@ pub struct EmailsResponse {
 
 /// Represents a team in API responses.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct ApiTeam {
   /// The name of the team.
   #[serde(skip_serializing_if = "Option::is_none")]
@@ -257,6 +288,7 @@ pub struct ApiTeam {
 
 /// Represents an escalation policy in API responses.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct ApiEscalationPolicy {
   /// The name of the escalation policy.
   #[serde(skip_serializing_if = "Option::is_none")]
@@ -268,6 +300,7 @@ pub struct ApiEscalationPolicy {
 
 /// Represents a user in API responses.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct ApiUser {
   /// The username of the user.
   #[serde(skip_serializing_if = "Option::is_none")]
@@ -276,6 +309,7 @@ pub struct ApiUser {
 
 /// Represents an on-call override.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct ApiOnCallOverride {
   /// The original user who was scheduled to be on-call.
   #[serde(skip_serializing_if = "Option::is_none", rename = "origOnCallUser")]
@@ -284,11 +318,19 @@ pub struct ApiOnCallOverride {
   #[serde(skip_serializing_if = "Option::is_none", rename = "overrideOnCallUser")]
   pub override_on_call_user: Option<ApiUser>,
   /// The start time of the on-call override.
-  #[serde(skip_serializing_if = "Option::is_none")]
-  pub start: Option<DateTime<Utc>>,
+  #[serde(
+    default,
+    with = "crate::timestamp",
+    skip_serializing_if = "Option::is_none"
+  )]
+  pub start: Option<OffsetDateTime>,
   /// The end time of the on-call override.
-  #[serde(skip_serializing_if = "Option::is_none")]
-  pub end: Option<DateTime<Utc>>,
+  #[serde(
+    default,
+    with = "crate::timestamp",
+    skip_serializing_if = "Option::is_none"
+  )]
+  pub end: Option<OffsetDateTime>,
   /// The escalation policy associated with this override.
   #[serde(skip_serializing_if = "Option::is_none")]
   pub policy: Option<ApiEscalationPolicy>,
@@ -296,13 +338,22 @@ pub struct ApiOnCallOverride {
 
 /// Represents an on-call roll/rotation.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct ApiOnCallRoll {
   /// The start time of the on-call period.
-  #[serde(skip_serializing_if = "Option::is_none")]
-  pub start: Option<DateTime<Utc>>,
+  #[serde(
+    default,
+    with = "crate::timestamp",
+    skip_serializing_if = "Option::is_none"
+  )]
+  pub start: Option<OffsetDateTime>,
   /// The end time of the on-call period.
-  #[serde(skip_serializing_if = "Option::is_none")]
-  pub end: Option<DateTime<Utc>>,
+  #[serde(
+    default,
+    with = "crate::timestamp",
+    skip_serializing_if = "Option::is_none"
+  )]
+  pub end: Option<OffsetDateTime>,
   /// The user who is on-call during this period.
   #[serde(skip_serializing_if = "Option::is_none", rename = "onCallUser")]
   pub on_call_user: Option<ApiUser>,
@@ -313,6 +364,7 @@ pub struct ApiOnCallRoll {
 
 /// Represents an on-call schedule entry.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct ApiOnCallEntry {
   /// The user who is scheduled to be on-call.
   #[serde(skip_serializing_if = "Option::is_none", rename = "onCallUser")]
@@ -330,8 +382,13 @@ pub struct ApiOnCallEntry {
   #[serde(skip_serializing_if = "Option::is_none", rename = "shiftName")]
   pub shift_name: Option<String>,
   /// The timestamp when the shift roll occurs.
-  #[serde(skip_serializing_if = "Option::is_none", rename = "shiftRoll")]
-  pub shift_roll: Option<DateTime<Utc>>,
+  #[serde(
+    default,
+    with = "crate::timestamp",
+    skip_serializing_if = "Option::is_none",
+    rename = "shiftRoll"
+  )]
+  pub shift_roll: Option<OffsetDateTime>,
   /// The list of rolls/rotations for this entry.
   #[serde(default, skip_serializing_if = "Vec::is_empty")]
   pub rolls: Vec<ApiOnCallRoll>,
@@ -339,6 +396,7 @@ pub struct ApiOnCallEntry {
 
 /// Represents an escalation policy schedule.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct ApiEscalationPolicySchedule {
   /// The escalation policy this schedule belongs to.
   #[serde(skip_serializing_if = "Option::is_none")]
@@ -353,6 +411,7 @@ pub struct ApiEscalationPolicySchedule {
 
 /// Represents a team's on-call schedule.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct ApiTeamSchedule {
   /// The team this schedule belongs to.
   #[serde(skip_serializing_if = "Option::is_none")]
@@ -364,6 +423,7 @@ pub struct ApiTeamSchedule {
 
 /// Represents a user's on-call schedule.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct ApiUserSchedule {
   /// The team schedules for this user.
   #[serde(
@@ -375,7 +435,8 @@ pub struct ApiUserSchedule {
 }
 
 /// Request to take on-call duty.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct TakeRequest {
   /// The user who is giving up on-call duty.
   #[serde(skip_serializing_if = "Option::is_none", rename = "fromUser")]
@@ -385,8 +446,19 @@ pub struct TakeRequest {
   pub to_user: Option<String>,
 }
 
+impl TakeRequest {
+  /// Creates a request for `to_user` to take on-call duty from `from_user`.
+  pub fn new(from_user: impl Into<String>, to_user: impl Into<String>) -> Self {
+    Self {
+      from_user: Some(from_user.into()),
+      to_user: Some(to_user.into()),
+    }
+  }
+}
+
 /// Response from taking on-call duty.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct TakeResponse {
   /// The result of the take request.
   #[serde(skip_serializing_if = "Option::is_none")]
@@ -394,7 +466,8 @@ pub struct TakeResponse {
 }
 
 /// Represents an entry in an escalation policy step.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct EscalationPolicyStepEntry {
   /// The type of execution for this escalation step.
   #[serde(skip_serializing_if = "Option::is_none", rename = "executionType")]
@@ -418,6 +491,7 @@ pub struct EscalationPolicyStepEntry {
 
 /// Represents a step in an escalation policy.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct EscalationPolicySteps {
   /// The timeout in seconds before escalating to the next step.
   pub timeout: i32,
@@ -425,8 +499,16 @@ pub struct EscalationPolicySteps {
   pub entries: Vec<EscalationPolicyStepEntry>,
 }
 
+impl EscalationPolicySteps {
+  /// Creates a step that escalates to `entries` after `timeout` seconds.
+  pub fn new(timeout: i32, entries: Vec<EscalationPolicyStepEntry>) -> Self {
+    Self { timeout, entries }
+  }
+}
+
 /// Represents an escalation policy.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct EscalationPolicy {
   /// The name of the escalation policy.
   pub name: String,
@@ -443,8 +525,27 @@ pub struct EscalationPolicy {
   pub id: String,
 }
 
+impl EscalationPolicy {
+  /// Creates a policy for the team `team_slug`, with `ignore_custom_paging_policies` set to
+  /// `false` and an empty `id`; set those fields directly if you need other values.
+  pub fn new(
+    name: impl Into<String>,
+    team_slug: impl Into<String>,
+    steps: Vec<EscalationPolicySteps>,
+  ) -> Self {
+    Self {
+      name: name.into(),
+      team_id: team_slug.into(),
+      ignore_custom_paging_policies: false,
+      steps,
+      id: String::new(),
+    }
+  }
+}
+
 /// Represents escalation policy details in a list response.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct EscalationPolicyListDetail {
   /// The name of the escalation policy.
   pub name: String,
@@ -454,6 +555,7 @@ pub struct EscalationPolicyListDetail {
 
 /// Represents an element in an escalation policy list.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct EscalationPolicyListElement {
   /// The escalation policy details.
   pub policy: EscalationPolicyListDetail,
@@ -463,13 +565,15 @@ pub struct EscalationPolicyListElement {
 
 /// Response containing a list of escalation policies.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct EscalationPolicyList {
   /// The list of escalation policies.
   pub policies: Vec<EscalationPolicyListElement>,
 }
 
 /// Represents a routing key for directing alerts.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct RoutingKey {
   /// The routing key value used to route alerts.
   #[serde(skip_serializing_if = "Option::is_none", rename = "routingKey")]
@@ -481,6 +585,7 @@ pub struct RoutingKey {
 
 /// Represents targets in a routing key response.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct RoutingKeyResponseTargets {
   /// The slug of the escalation policy this routing key targets.
   #[serde(skip_serializing_if = "Option::is_none", rename = "policySlug")]
@@ -489,6 +594,7 @@ pub struct RoutingKeyResponseTargets {
 
 /// Response containing routing key information.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct RoutingKeyResponse {
   /// The routing key value.
   #[serde(skip_serializing_if = "Option::is_none", rename = "routingKey")]
@@ -500,6 +606,7 @@ pub struct RoutingKeyResponse {
 
 /// Response containing a list of routing keys.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct RoutingKeyResponseList {
   /// The list of routing keys.
   #[serde(default, skip_serializing_if = "Vec::is_empty", rename = "routingKeys")]
@@ -539,7 +646,8 @@ impl ContactType {
 }
 
 /// Represents a contact method for a user.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Contact {
   /// The phone number for phone-based contact methods.
   #[serde(skip_serializing_if = "Option::is_none", rename = "phone")]
@@ -568,6 +676,24 @@ pub struct Contact {
 }
 
 impl Contact {
+  /// Creates a phone contact method with the given label and number.
+  pub fn phone(label: impl Into<String>, phone_number: impl Into<String>) -> Self {
+    Self {
+      label: Some(label.into()),
+      phone_number: Some(phone_number.into()),
+      ..Self::default()
+    }
+  }
+
+  /// Creates an email contact method with the given label and address.
+  pub fn email(label: impl Into<String>, email: impl Into<String>) -> Self {
+    Self {
+      label: Some(label.into()),
+      email: Some(email.into()),
+      ..Self::default()
+    }
+  }
+
   /// Determines the contact type based on the contact's fields.
   pub fn contact_type(&self) -> Option<ContactType> {
     if self.phone_number.is_some() {
@@ -582,6 +708,7 @@ impl Contact {
 
 /// A group of contact methods.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct ContactGroup {
   /// The list of contact methods in this group.
   #[serde(rename = "contactMethods")]
@@ -590,6 +717,7 @@ pub struct ContactGroup {
 
 /// Response containing all contact methods for a user.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct AllContactResponse {
   /// The phone contact methods for the user.
   #[serde(skip_serializing_if = "Option::is_none")]
@@ -604,6 +732,7 @@ pub struct AllContactResponse {
 
 /// Response for getting all contacts of a specific type.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct GetAllContactResponse {
   /// The list of contact methods of the requested type.
   #[serde(
@@ -617,6 +746,69 @@ pub struct GetAllContactResponse {
 #[cfg(test)]
 mod tests {
   use super::*;
+  use time::macros::datetime;
+
+  #[test]
+  fn test_incident_timestamps_round_trip() {
+    let json = r#"{"alertCount":2,"currentPhase":"RESOLVED","entityId":"disk-full","incidentNumber":"1234","lastAlertTime":"2024-03-14T14:21:13.454Z","startTime":"2024-03-14T14:20:00Z","transitions":[{"Name":"ACKED","At":"2024-03-14T14:22:05.100Z","By":"jdoe","Manually":true},{"Name":"RESOLVED","At":"2024-03-14T15:00:00Z","By":"jdoe","Manually":true}]}"#;
+
+    let incident: Incident = serde_json::from_str(json).unwrap();
+
+    assert_eq!(
+      incident.last_alert_time,
+      Some(datetime!(2024-03-14 14:21:13.454 UTC))
+    );
+    assert_eq!(
+      incident.start_time,
+      Some(datetime!(2024-03-14 14:20:00 UTC))
+    );
+    assert_eq!(
+      incident.transitions[0].at,
+      Some(datetime!(2024-03-14 14:22:05.1 UTC))
+    );
+    assert_eq!(serde_json::to_string(&incident).unwrap(), json);
+  }
+
+  #[test]
+  fn test_team_schedule_timestamps_round_trip() {
+    let json = r#"{"team":{"name":"Ops","slug":"team-ops"},"schedules":[{"policy":{"name":"Primary","slug":"pol-primary"},"schedule":[{"onCallUser":{"username":"jdoe"},"onCallType":"rotation_group","rotationName":"Weekly","shiftName":"Day","shiftRoll":"2024-03-18T16:00:00Z","rolls":[{"start":"2024-03-18T16:00:00Z","end":"2024-03-25T16:00:00Z","onCallUser":{"username":"jdoe"},"isRoll":true}]}],"overrides":[{"origOnCallUser":{"username":"jdoe"},"overrideOnCallUser":{"username":"asmith"},"start":"2024-03-19T00:00:00.000500Z","end":"2024-03-19T12:00:00Z"}]}]}"#;
+
+    let schedule: ApiTeamSchedule = serde_json::from_str(json).unwrap();
+
+    let entry = &schedule.schedules[0].schedule[0];
+    assert_eq!(entry.shift_roll, Some(datetime!(2024-03-18 16:00:00 UTC)));
+    assert_eq!(entry.rolls[0].end, Some(datetime!(2024-03-25 16:00:00 UTC)));
+    assert_eq!(
+      schedule.schedules[0].overrides[0].start,
+      Some(datetime!(2024-03-19 00:00:00.000_5 UTC))
+    );
+    assert_eq!(serde_json::to_string(&schedule).unwrap(), json);
+  }
+
+  #[test]
+  fn test_timestamps_null_or_missing_are_none() {
+    let roll: ApiOnCallRoll = serde_json::from_str(r#"{"start":null}"#).unwrap();
+
+    assert_eq!(roll.start, None);
+    assert_eq!(roll.end, None);
+    assert_eq!(serde_json::to_string(&roll).unwrap(), "{}");
+  }
+
+  #[test]
+  fn test_timestamps_with_offset_serialize_as_utc() {
+    let roll: ApiOnCallRoll =
+      serde_json::from_str(r#"{"start":"2024-03-18T11:00:00-05:00"}"#).unwrap();
+
+    assert_eq!(
+      serde_json::to_string(&roll).unwrap(),
+      r#"{"start":"2024-03-18T16:00:00Z"}"#
+    );
+  }
+
+  #[test]
+  fn test_invalid_timestamp_is_an_error() {
+    assert!(serde_json::from_str::<ApiOnCallRoll>(r#"{"start":"yesterday"}"#).is_err());
+  }
 
   #[test]
   fn test_contact_type_endpoint_noun() {
