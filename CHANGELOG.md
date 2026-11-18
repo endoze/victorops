@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0](https://github.com/endoze/victorops/compare/v0.1.4...v0.2.0) - 2026-11-18
+
+### Added
+
+- [**breaking**] replace chrono with time, refresh CI and release tooling
+
+### Other
+
+- move actions off deprecated Node runtimes, pin to SHAs
+
 ## [0.1.4](https://github.com/endoze/victorops/compare/v0.1.3...v0.1.4) - 2026-07-20
 
 ### Other
